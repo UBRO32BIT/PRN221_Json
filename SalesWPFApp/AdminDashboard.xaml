@@ -1,0 +1,23 @@
+﻿<Window x:Class="SalesWPFApp.AdminDashboard"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:SalesWPFApp"
+    mc:Ignorable="d"
+    Height="450" Width="800"
+    Title="AdminDashboard">
+
+    <Grid>
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                <GradientStop Color="#FF2181F3" Offset="0.0" />
+                <GradientStop Color="#FF301616" Offset="1.0" />
+            </LinearGradientBrush>
+        </Grid.Background>
+        <Button x:Name="btnMotorbikeManagement" Content="Manage Books" Click="btnMotorbikeManagement_Click" Margin="276,176,276,204" Background="#FF8ADA55" FontSize="16" />
+        <Button x:Name="btnLogout" Content="Log Out" Click="btnLogout_Click" Margin="310,325,308,54" Background="#FFED4848" FontSize="16" />
+        <Button x:Name="btnCustomerManagement" Content="Manage Book Categories" Click="btnCustomerManagement_Click" Margin="276,248,274,130" Background="#FF8ADA" FontSize="16"/>
+        <Label Content="Ryou Book Store Management" HorizontalAlignment="Center" Margin="0,79,0,0" VerticalAlignment="Top" FontSize="24" FontWeight="Bold" Foreground="#FFE0E0E0"/>
+    </Grid>
+</Window>
