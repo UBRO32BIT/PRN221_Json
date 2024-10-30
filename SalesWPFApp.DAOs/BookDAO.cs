@@ -55,12 +55,17 @@ namespace SalesWPFApp.DAOs
         }
 
         public void DeleteBook(int id) {
-            var book = _context.Books.SingleOrDefault(p =>p.BookId == id);
+            var book = _context.Books.SingleOrDefault(p => p.BookId == id);
             if (book != null)
             {
                 _context.Books.Remove(book);
                 _context.SaveChanges();
             }
+        }
+
+        public List<Book> GetBooksByCategoryId(int categoryId)
+        {
+            return _context.Books.Where(b => b.CategoryId == categoryId).ToList();
         }
     }
 }

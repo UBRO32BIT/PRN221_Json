@@ -6,6 +6,7 @@
     xmlns:local="clr-namespace:SalesWPFApp"
     mc:Ignorable="d"
     Height="450" Width="800"
+    Closing="Window_Closing"
     Title="AdminDashboard">
 
     <Grid>
@@ -15,9 +16,9 @@
                 <GradientStop Color="#FF301616" Offset="1.0" />
             </LinearGradientBrush>
         </Grid.Background>
-        <Button x:Name="btnMotorbikeManagement" Content="Manage Books" Click="btnMotorbikeManagement_Click" Margin="276,176,276,204" Background="#FF8ADA55" FontSize="16" />
+        <Button x:Name="btnBookManagement" Content="Manage Books" Click="btnBookManagement_Click" Margin="276,176,276,204" Background="#FF8ADA55" FontSize="16" />
         <Button x:Name="btnLogout" Content="Log Out" Click="btnLogout_Click" Margin="310,325,308,54" Background="#FFED4848" FontSize="16" />
-        <Button x:Name="btnCustomerManagement" Content="Manage Book Categories" Click="btnCustomerManagement_Click" Margin="276,248,274,130" Background="#FF8ADA" FontSize="16"/>
+        <Button x:Name="btnCategoryManagement" Content="Manage Book Categories" Click="btnCategoryManagement_Click" Margin="276,248,274,130" Background="#FF8ADA" FontSize="16"/>
         <Label Content="Ryou Book Store Management" HorizontalAlignment="Center" Margin="0,79,0,0" VerticalAlignment="Top" FontSize="24" FontWeight="Bold" Foreground="#FFE0E0E0"/>
     </Grid>
 </Window>

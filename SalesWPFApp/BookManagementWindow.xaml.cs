@@ -1,7 +1,8 @@
 ﻿using BusinessObject.Entities;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.Win32;
-using SalesWPFApp.Repositories.Implementations;
-using SalesWPFApp.Repositories.Interfaces;
+using SalesWPFApp.Services.Implementations;
+using SalesWPFApp.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using static System.Reflection.Metadata.BlobBuilder;
 
 namespace SalesWPFApp
 {
@@ -24,36 +26,43 @@ namespace SalesWPFApp
     /// </summary>
     public partial class BookManagementWindow : Window
     {
-        private IBookRepository _bookRepository;
-        private IBookCategoryRepository _bookcategoryRepository;
+        private IBookService _bookService;
+        private IBookCategoryService _bookCategoryService;
 
         public BookManagementWindow()
         {
             InitializeComponent();
-            _bookRepository = new BookRepository();
-            _bookcategoryRepository = new BookCategoryRepository();
+            _bookService = new BookService();
+            _bookCategoryService = new BookCategoryService();
         }
 
         private void LoadCategories()
         {
-            // Sample list of categories, replace with your actual data source
-            var categories = _bookcategoryRepository.GetAllCategories();
+            try
+            {
+                // Sample list of categories, replace with your actual data source
+                var categories = _bookCategoryService.GetAllCategories();
 
-            // Bind categories to ComboBox
-            cbbCategory.ItemsSource = categories;
+                // Bind categories to ComboBox
+                cbbCategory.ItemsSource = categories;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void LoadBooks()
         {
             try
             {
-                var bookList = _bookRepository.GetAllBooks();
+                var bookList = _bookService.GetAllBooks();
                 BookDataGrid.ItemsSource = bookList;
 
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -77,40 +86,80 @@ namespace SalesWPFApp
         {
             try
             {
-                var bookList = _bookRepository.GetAllBooks();
+                var bookList = _bookService.GetAllBooks();
                 BookDataGrid.ItemsSource = bookList;
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private void BookDataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (BookDataGrid.SelectedItem is Book selectedBook)
+            try
             {
-                txtBookName.Text = selectedBook.BookName;
-                txtAuthor.Text = selectedBook.Author;
-                txtPublisher.Text = selectedBook.Publisher;
-                txtYear.Text = selectedBook.Year.ToString();
-                txtDescription.Text = selectedBook.Description;
-                txtUnitPrice.Text = selectedBook.UnitPrice.ToString();
-                txtUnitsInStock.Text = selectedBook.UnitsInStock.ToString();
-                txtImageUrl.Text = selectedBook.ImageUrl;
-                cbbCategory.SelectedValue = selectedBook.CategoryId;
+                if (BookDataGrid.SelectedItem is Book selectedBook)
+                {
+                    txtBookName.Text = selectedBook.BookName;
+                    txtAuthor.Text = selectedBook.Author;
+                    txtPublisher.Text = selectedBook.Publisher;
+                    txtYear.Text = selectedBook.Year.ToString();
+                    txtDescription.Text = selectedBook.Description;
+                    txtUnitPrice.Text = selectedBook.UnitPrice.ToString();
+                    txtUnitsInStock.Text = selectedBook.UnitsInStock.ToString();
+                    txtImageUrl.Text = selectedBook.ImageUrl;
+                    cbbCategory.SelectedValue = selectedBook.CategoryId;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
         private void AddImageButton_Click(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            bool? response = openFileDialog.ShowDialog();
-
-            if (response == true)
+            try
             {
-                string filePath = openFileDialog.FileName;
-                MessageBox.Show(filePath);
+                OpenFileDialog openFileDialog = new OpenFileDialog
+                {
+                    Filter = "Image Files|*.jpg;*.jpeg;*.png;*.bmp"
+                };
+                bool? response = openFileDialog.ShowDialog();
+
+                if (response == true)
+                {
+                    string sourceFilePath = openFileDialog.FileName;
+
+                    // Define the directory where images will be stored
+                    string imagesDirectory = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Images");
+                    if (!System.IO.Directory.Exists(imagesDirectory))
+                    {
+                        System.IO.Directory.CreateDirectory(imagesDirectory);
+                    }
+
+                    // Generate a timestamp
+                    string timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
+
+                    // Get the original file name and add the timestamp as a prefix
+                    string fileNameWithTimestamp = $"{timestamp}_{System.IO.Path.GetFileName(sourceFilePath)}";
+
+                    // Set the destination file path with the timestamp-prefixed filename
+                    string destinationFilePath = System.IO.Path.Combine(imagesDirectory, fileNameWithTimestamp);
+
+                    // Copy the image to the destination path
+                    System.IO.File.Copy(sourceFilePath, destinationFilePath, overwrite: true);
+
+                    // Set the ImageUrl TextBox to the relative path
+                    txtImageUrl.Text = destinationFilePath;
+
+                    MessageBox.Show("Image saved and path set successfully!");
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -122,68 +171,43 @@ namespace SalesWPFApp
 
         private void SearchButton_Click(object sender, RoutedEventArgs e)
         {
-            string searchBook = SearchTextBox.Text.ToLower();
-            var allBooks = _bookRepository.GetAllBooks();
-            var motorbikes = allBooks.Where(m =>
-            m.BookName.ToLower().Contains(searchBook) ||
-            m.Author.ToLower().Contains(searchBook) ||
-            m.Description.ToLower().Contains(searchBook) ||
-            m.Publisher.ToLower().Contains(searchBook)).ToList();
-            BookDataGrid.ItemsSource = motorbikes;
+            try
+            {
+                string searchBook = SearchTextBox.Text.ToLower();
+                var allBooks = _bookService.GetAllBooks();
+                var books = allBooks.Where(m =>
+                m.BookName.ToLower().Contains(searchBook) ||
+                m.Author.ToLower().Contains(searchBook) ||
+                m.Description.ToLower().Contains(searchBook) ||
+                m.Publisher.ToLower().Contains(searchBook)).ToList();
+                BookDataGrid.ItemsSource = books;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            SearchButton_Click(sender, e);
+
         }
 
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                // Input validation
-                if (string.IsNullOrWhiteSpace(txtBookName.Text))
+                List<string> validationFailedList = validateFields();
+                if (!validationFailedList.IsNullOrEmpty())
                 {
-                    MessageBox.Show("Book Name is required.");
+                    var messages = string.Join("\n", validationFailedList.Select(b => $"{b}"));
+                    MessageBox.Show($"Validation failed: \n{messages}");
                     return;
                 }
 
-                if (string.IsNullOrWhiteSpace(txtAuthor.Text))
-                {
-                    MessageBox.Show("Author is required.");
-                    return;
-                }
-
-                if (string.IsNullOrWhiteSpace(txtPublisher.Text))
-                {
-                    MessageBox.Show("Publisher is required.");
-                    return;
-                }
-
-                if (!int.TryParse(txtYear.Text, out int year))
-                {
-                    MessageBox.Show("Invalid year. Please enter a valid number.");
-                    return;
-                }
-
-                if (!decimal.TryParse(txtUnitPrice.Text, out decimal unitPrice))
-                {
-                    MessageBox.Show("Invalid unit price. Please enter a valid number.");
-                    return;
-                }
-
-                if (!int.TryParse(txtUnitsInStock.Text, out int unitsInStock))
-                {
-                    MessageBox.Show("Invalid units in stock. Please enter a valid number.");
-                    return;
-                }
-
-                if (cbbCategory.SelectedValue == null)
-                {
-                    MessageBox.Show("Please select a category.");
-                    return;
-                }
-
+                decimal.TryParse(txtUnitPrice.Text, out decimal unitPrice);
+                int.TryParse(txtYear.Text, out int year);
+                int.TryParse(txtUnitsInStock.Text, out int unitsInStock);
                 // Creating a new Book object
                 Book book = new Book()
                 {
@@ -198,8 +222,7 @@ namespace SalesWPFApp
                     CategoryId = (int)cbbCategory.SelectedValue
                 };
 
-                // Add the book to the repository
-                _bookRepository.AddBook(book);
+                _bookService.AddBook(book);
 
                 MessageBox.Show("Book added successfully!");
 
@@ -209,7 +232,7 @@ namespace SalesWPFApp
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -220,19 +243,18 @@ namespace SalesWPFApp
                 // Check if a book is selected in the DataGrid
                 if (BookDataGrid.SelectedItem is Book selectedBook)
                 {
+                    List<string> validationFailedList = validateFields();
                     // Validate input fields
-                    if (string.IsNullOrWhiteSpace(txtBookName.Text) ||
-                        string.IsNullOrWhiteSpace(txtAuthor.Text) ||
-                        string.IsNullOrWhiteSpace(txtPublisher.Text) ||
-                        !int.TryParse(txtYear.Text, out int year) ||
-                        string.IsNullOrWhiteSpace(txtDescription.Text) ||
-                        !decimal.TryParse(txtUnitPrice.Text, out decimal unitPrice) ||
-                        !int.TryParse(txtUnitsInStock.Text, out int unitsInStock) ||
-                        cbbCategory.SelectedValue == null)
+                    if (!validationFailedList.IsNullOrEmpty())
                     {
-                        MessageBox.Show("Please fill out all fields correctly.");
+                        var messages = string.Join("\n", validationFailedList.Select(b => $"{b}"));
+                        MessageBox.Show($"Validation failed: \n{messages}");
                         return;
                     }
+
+                    decimal.TryParse(txtUnitPrice.Text, out decimal unitPrice);
+                    int.TryParse(txtYear.Text, out int year);
+                    int.TryParse(txtUnitsInStock.Text, out int unitsInStock);
 
                     // Update the selected book with new values
                     selectedBook.BookName = txtBookName.Text;
@@ -246,7 +268,7 @@ namespace SalesWPFApp
                     selectedBook.CategoryId = (int)cbbCategory.SelectedValue;
 
                     // Save changes in the repository
-                    _bookRepository.UpdateBook(selectedBook);
+                    _bookService.UpdateBook(selectedBook);
 
                     MessageBox.Show("Book updated successfully!");
                 }
@@ -257,7 +279,7 @@ namespace SalesWPFApp
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
@@ -281,7 +303,7 @@ namespace SalesWPFApp
                     if (result == MessageBoxResult.Yes)
                     {
                         // Delete the book
-                        _bookRepository.DeleteBook(selectedBook.BookId);
+                        _bookService.DeleteBook(selectedBook.BookId);
                         MessageBox.Show("Book deleted successfully!");
                     }
                 }
@@ -292,7 +314,7 @@ namespace SalesWPFApp
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
@@ -308,6 +330,82 @@ namespace SalesWPFApp
             adminDashboard.Show();
 
             this.Hide();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Application.Current.Shutdown(); // Exit the application
+        }
+
+        private List<string> validateFields()
+        {
+            List<string> validationFailedList = new List<string>();
+            // Input validation
+            if (string.IsNullOrWhiteSpace(txtBookName.Text))
+            {
+                validationFailedList.Add("Book Name is required.");
+            }
+            else if (txtBookName.Text.Length > 100)
+            {
+                validationFailedList.Add("Book Name cannot exceed 100 characters.");
+            }
+
+            if (string.IsNullOrWhiteSpace(txtDescription.Text))
+            {
+                validationFailedList.Add("Description is required.");
+            }
+
+            if (string.IsNullOrWhiteSpace(txtAuthor.Text))
+            {
+                validationFailedList.Add("Author is required.");
+            }
+            else if (txtAuthor.Text.Length > 100)
+            {
+                validationFailedList.Add("Book Name cannot exceed 100 characters.");
+            }
+
+            if (string.IsNullOrWhiteSpace(txtPublisher.Text))
+            {
+                validationFailedList.Add("Publisher is required.");
+            }
+
+            if (!int.TryParse(txtYear.Text, out int year))
+            {
+                validationFailedList.Add("Invalid year. Please enter a valid number.");
+            }
+            else if (year < 0)
+            {
+                validationFailedList.Add("Invalid year. Please enter a valid number.");
+            }
+
+            if (!decimal.TryParse(txtUnitPrice.Text, out decimal unitPrice))
+            {
+                validationFailedList.Add("Invalid unit price. Please enter a valid number.");
+            }
+            else if (unitPrice <= 0)
+            {
+                validationFailedList.Add("Unit price must be greater than 0.");
+            }
+
+            if (!int.TryParse(txtUnitsInStock.Text, out int unitsInStock))
+            {
+                validationFailedList.Add("Invalid units in stock. Please enter a valid number.");
+            }
+            else if (unitsInStock < 0)
+            {
+                validationFailedList.Add("Units in stock must not be a negative number.");
+            }
+
+            if (cbbCategory.SelectedValue == null)
+            {
+                validationFailedList.Add("Please select a category.");
+            }
+
+            if (string.IsNullOrWhiteSpace(txtImageUrl.Text))
+            {
+                validationFailedList.Add("Image is required");
+            }
+            return validationFailedList;
         }
     }
 }

@@ -2,13 +2,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SalesWPFApp.Repositories.Interfaces
+namespace SalesWPFApp.Services.Interfaces
 {
-    public interface IBookRepository
+    public interface IBookService
     {
         public void AddBook(Book book);
         public Book GetBookById(int id);

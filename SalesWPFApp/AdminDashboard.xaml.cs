@@ -25,10 +25,10 @@ namespace SalesWPFApp
             InitializeComponent();
         }
 
-        private void btnMotorbikeManagement_Click(object sender, RoutedEventArgs e)
+        private void btnBookManagement_Click(object sender, RoutedEventArgs e)
         {
-            BookManagementWindow motorbikeManagementWindow = new BookManagementWindow();
-            motorbikeManagementWindow.Show();
+            BookManagementWindow bookManagementWindow = new BookManagementWindow();
+            bookManagementWindow.Show();
             this.Hide();
         }
 
@@ -44,11 +44,16 @@ namespace SalesWPFApp
             }
         }
 
-        private void btnCustomerManagement_Click(object sender, RoutedEventArgs e)
+        private void btnCategoryManagement_Click(object sender, RoutedEventArgs e)
         {
             BookCategoryManagementWindow categoryManagementWindow = new BookCategoryManagementWindow();
             categoryManagementWindow.Show();
             this.Hide();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Application.Current.Shutdown(); // Exit the application
         }
     }
 }

@@ -1,6 +1,9 @@
 ﻿using BusinessObject.Entities;
+using Microsoft.IdentityModel.Tokens;
 using SalesWPFApp.Repositories.Implementations;
 using SalesWPFApp.Repositories.Interfaces;
+using SalesWPFApp.Services.Implementations;
+using SalesWPFApp.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,23 +25,25 @@ namespace SalesWPFApp
     /// </summary>
     public partial class BookCategoryManagementWindow : Window
     {
-        private IBookCategoryRepository _bookCategoryRepository;
+        private IBookCategoryService _bookCategoryService;
+        private IBookService _bookService;
         public BookCategoryManagementWindow()
         {
             InitializeComponent();
-            _bookCategoryRepository = new BookCategoryRepository();
+            _bookCategoryService = new BookCategoryService();
+            _bookService = new BookService();
         }
 
         private void LoadCategories()
         {
             try
             {
-                var categories = _bookCategoryRepository.GetAllCategories();
+                var categories = _bookCategoryService.GetAllCategories();
                 BookDataGrid.ItemsSource = categories;
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -52,12 +57,12 @@ namespace SalesWPFApp
         {
             try
             {
-                var bookList = _bookCategoryRepository.GetAllCategories();
+                var bookList = _bookCategoryService.GetAllCategories();
                 BookDataGrid.ItemsSource = bookList;
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -76,10 +81,17 @@ namespace SalesWPFApp
 
         private void SearchButton_Click(object sender, RoutedEventArgs e)
         {
-            string searchBook = SearchTextBox.Text.ToLower();
-            var allBooks = _bookCategoryRepository.GetAllCategories();
-            var results = allBooks.Where(m => m.Name.ToLower().Contains(searchBook));
-            BookDataGrid.ItemsSource = results;
+            try
+            {
+                string searchBook = SearchTextBox.Text.ToLower();
+                var allBooks = _bookCategoryService.GetAllCategories();
+                var results = allBooks.Where(m => m.Name.ToLower().Contains(searchBook));
+                BookDataGrid.ItemsSource = results;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void SearchTextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -105,9 +117,9 @@ namespace SalesWPFApp
                 };
 
                 // Add the book to the repository
-                _bookCategoryRepository.AddCategory(bookCategory);
+                _bookCategoryService.AddCategory(bookCategory);
 
-                MessageBox.Show("Book added successfully!");
+                MessageBox.Show("Category added successfully!");
 
                 // Reload books and clear the input fields
                 LoadCategories();
@@ -115,7 +127,7 @@ namespace SalesWPFApp
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 
@@ -137,9 +149,9 @@ namespace SalesWPFApp
                     selectedCategory.Name = txtName.Text;
 
                     // Save changes in the repository
-                    _bookCategoryRepository.UpdateCategory(selectedCategory);
+                    _bookCategoryService.UpdateCategory(selectedCategory);
 
-                    MessageBox.Show("Book updated successfully!");
+                    MessageBox.Show("Category updated successfully!");
                 }
                 else
                 {
@@ -148,7 +160,7 @@ namespace SalesWPFApp
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
@@ -169,12 +181,21 @@ namespace SalesWPFApp
                     MessageBoxResult result = MessageBox.Show($"Are you sure you want to delete '{selectedBook.Name}'?",
                         "Confirm Deletion", MessageBoxButton.YesNo, MessageBoxImage.Warning);
 
-                    if (result == MessageBoxResult.Yes)
+                    if (result == MessageBoxResult.No)
                     {
-                        // Delete the book
-                        _bookCategoryRepository.DeleteCategory(selectedBook.CategoryId);
-                        MessageBox.Show("Book deleted successfully!");
+                        return;
                     }
+
+                    var books = _bookService.GetBookByCategoryId(selectedBook.CategoryId);
+                    if (!books.IsNullOrEmpty())
+                    {
+                        var bookNames = string.Join("\n", books.Select(b => $"ID: {b.BookId}, Name: {b.BookName}"));
+                        MessageBox.Show($"Cannot delete category. The following books are attached to it: \n{bookNames}");
+                        return;
+                    }
+                    // Delete the book
+                    _bookCategoryService.DeleteCategory(selectedBook.CategoryId);
+                    MessageBox.Show("Book deleted successfully!");
                 }
                 else
                 {
@@ -183,7 +204,7 @@ namespace SalesWPFApp
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Error: {ex.Message}");
+                MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
             finally
             {
@@ -199,6 +220,11 @@ namespace SalesWPFApp
             adminDashboard.Show();
 
             this.Hide();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Application.Current.Shutdown(); // Exit the application
         }
     }
 }

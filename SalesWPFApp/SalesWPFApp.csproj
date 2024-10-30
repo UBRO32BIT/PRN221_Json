@@ -9,8 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\DataAccess\BusinessObject.csproj" />
-    <ProjectReference Include="..\SalesWPFApp.Repositories\SalesWPFApp.Repositories.csproj" />
+    <ProjectReference Include="..\SalesWPFApp.Services\SalesWPFApp.Services.csproj" />
   </ItemGroup>
 
   <ItemGroup>

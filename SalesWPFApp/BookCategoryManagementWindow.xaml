@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:SalesWPFApp"
         mc:Ignorable="d"
         Loaded="Window_Loaded"
+        Closing="Window_Closing"
         Title="Manage Book Categories" Height="400" Width="800">
     <Grid>
         <Grid.Background>
@@ -45,7 +46,6 @@
             <DataGrid.Columns>
                 <DataGridTextColumn Header="ID" Binding="{Binding CategoryId}" Width="*"/>
                 <DataGridTextColumn Header="Category Name" Binding="{Binding Name}" Width="*"/>
-                <DataGridTextColumn Header="Created Date" Binding="{Binding CreatedDate}" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
         <StackPanel Orientation="Horizontal" Grid.Row="4" Margin="350,10,0,10" HorizontalAlignment="Left" Grid.ColumnSpan="2">

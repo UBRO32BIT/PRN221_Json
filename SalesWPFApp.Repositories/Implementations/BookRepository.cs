@@ -25,5 +25,8 @@ namespace SalesWPFApp.Repositories.Implementations
 
         public void UpdateBook(Book book)
             => BookDAO.Instance.UpdateBook(book);
+
+        public List<Book> GetBookByCategoryId(int categoryId)
+            => BookDAO.Instance.GetBooksByCategoryId(categoryId);
     }
 }

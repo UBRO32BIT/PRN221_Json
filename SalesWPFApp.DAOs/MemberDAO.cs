@@ -1,5 +1,6 @@
 ﻿using BusinessObject.Entities;
 using Microsoft.EntityFrameworkCore;
+using BCrypt.Net;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,9 +34,15 @@ namespace SalesWPFApp.DAOs
 
         public Member? GetMemberByEmailAndPassword(string email, string password)
         {
-            return _context.Members
-                       .Include(u => u.Role)
-                       .SingleOrDefault(u => u.Email == email && u.Password == password);
+            var member = _context.Members
+                        .Include(u => u.Role)
+                        .SingleOrDefault(u => u.Email == email);
+
+            if (member != null && BCrypt.Net.BCrypt.Verify(password, member.Password))
+            {
+                return member;
+            }
+            return null;
         }
 
         public List<Member> GetMembers()
@@ -48,6 +55,8 @@ namespace SalesWPFApp.DAOs
             bool result = false;
             try
             {
+                // Hash the password before saving it
+                member.Password = BCrypt.Net.BCrypt.HashPassword(member.Password);
                 _context.Members.Add(member);
                 _context.SaveChanges();
                 result = true;

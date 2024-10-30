@@ -1,6 +1,8 @@
 ﻿using BusinessObject.Entities;
 using SalesWPFApp.Repositories.Implementations;
 using SalesWPFApp.Repositories.Interfaces;
+using SalesWPFApp.Services.Implementations;
+using SalesWPFApp.Services.Interfaces;
 using System.Net.NetworkInformation;
 using System.Text;
 using System.Windows;
@@ -20,11 +22,11 @@ namespace SalesWPFApp
     /// </summary>
     public partial class MainWindow : Window
     {
-        private IMemberRepository _memberRepository;
+        private IMemberService _memberService;
         public MainWindow()
         {
             InitializeComponent();
-            _memberRepository = new MemberRepository();
+            _memberService = new MemberService();
         }
 
         private void btnExit_Click(object sender, RoutedEventArgs e)
@@ -36,27 +38,34 @@ namespace SalesWPFApp
 
         private void btnLogin_Click(object sender, RoutedEventArgs e)
         {
-            if (string.IsNullOrEmpty(txtEmail.Text) || string.IsNullOrEmpty(txtPassword.Password))
+            try
             {
-                MessageBox.Show("Please enter email and password!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
-            }
+                if (string.IsNullOrEmpty(txtEmail.Text) || string.IsNullOrEmpty(txtPassword.Password))
+                {
+                    MessageBox.Show("Please enter email and password!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
 
-            Member user = _memberRepository.GetMemberByEmailAndPassword(txtEmail.Text, txtPassword.Password);
-            if (user == null)
-            {
-                MessageBox.Show("Invalid email or password!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-                return;
+                Member user = _memberService.GetMemberByEmailAndPassword(txtEmail.Text, txtPassword.Password);
+                if (user == null)
+                {
+                    MessageBox.Show("Invalid email or password!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+                if (user != null && user.Role.RoleId == 1)
+                {
+                    AdminDashboard adminDashboard = new AdminDashboard();
+                    adminDashboard.Show();
+                    this.Close();
+                }
+                else
+                {
+                    MessageBox.Show("Your role is forbidden to access this resource!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                }
             }
-            if (user != null && txtPassword.Password.Equals(user.Password) && user.Role.RoleId == 1)
+            catch (Exception ex)
             {
-                AdminDashboard adminDashboard = new AdminDashboard();
-                adminDashboard.Show();
-                this.Close();
-            }
-            else
-            {
-                MessageBox.Show("Invalid email or password!", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show($"Error: {ex.Message}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
     }
