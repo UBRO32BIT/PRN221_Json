@@ -1,17 +1,19 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using SalesWPFApp.Repositories.Interfaces;
 using BusinessObject.Entities;
+using Microsoft.AspNetCore.Authorization;
+using SalesWPFApp.Services.Interfaces;
 
 namespace SalesWPFApp_RazorPages.Pages
 {
+    [Authorize(Roles = "ADMIN")]
     public class BooksModel : PageModel
     {
-        private readonly IBookRepository _bookRepository;
+        private readonly IBookService _bookRepository;
 
         public List<Book> Books { get; set; } = new List<Book>();
 
-        public BooksModel(IBookRepository bookRepository)
+        public BooksModel(IBookService bookRepository)
         {
             _bookRepository = bookRepository;
         }

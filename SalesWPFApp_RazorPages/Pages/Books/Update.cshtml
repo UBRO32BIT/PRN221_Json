@@ -1,5 +1,5 @@
 ﻿@page
-@model SalesWPFApp_RazorPages.Pages.Books.CreateModel
+@model SalesWPFApp_RazorPages.Pages.Books.UpdateModel
 @{
     var Book = Model.book;
 }
@@ -47,12 +47,16 @@
     </div>
     <!-- Image preview -->
     <div class="mb-3">
-        <img id="imagePreview" src="#" alt="Image Preview" style="display: none; max-width: 200px; margin-top: 10px;" />
+        <img id="imagePreview"
+             src="@Model.book.ImageUrl"
+             alt="Image Preview"
+             style="max-width: 200px; margin-top: 10px; display: @(string.IsNullOrEmpty(Model.book.ImageUrl) ? "none" : "block");" />
     </div>
     <div class="mb-3">
         <label asp-for="ImageFile" class="form-label">Image File</label>
         <input type="file" asp-for="ImageFile" class="form-control" onchange="previewImage(event)" />
         <span asp-validation-for="ImageFile" class="text-danger"></span>
+        <input type="hidden" asp-for="book.ImageUrl"/>
     </div>
 
     <button type="submit" class="btn btn-success">Submit</button>

@@ -4,20 +4,22 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
-using SalesWPFApp.Repositories.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using SalesWPFApp.Services.Interfaces;
 
 namespace SalesWPFApp_RazorPages.Pages
 {
+    [AllowAnonymous]
     public class LoginModel : PageModel
     {
-        private readonly IMemberRepository _memberRepository;
+        private readonly IMemberService _memberRepository;
         [BindProperty]
         public InputModel Input { get; set; } = new InputModel();
         public string ReturnUrl { get; set; } = string.Empty;
         [TempData]
         public string ErrorMessage { get; set; } = string.Empty;
 
-        public LoginModel(IMemberRepository accountService)
+        public LoginModel(IMemberService accountService)
         {
             _memberRepository = accountService;
         }
@@ -60,7 +62,7 @@ namespace SalesWPFApp_RazorPages.Pages
                 var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, account.Email),
-                new Claim(ClaimTypes.Role, account.Role.ToString()) // If you have roles
+                new Claim(ClaimTypes.Role, account.Role.RoleName) // If you have roles
             };
 
                 // Create identity

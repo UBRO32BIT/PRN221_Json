@@ -1,0 +1,15 @@
+﻿@page
+@model SalesWPFApp_RazorPages.Pages.Categories.CreateModel
+@{
+    var Book = Model.category;
+}
+
+<form method="post" enctype="multipart/form-data" class="w-75 mx-auto my-4">
+    <div class="mb-3">
+        <label asp-for="category.Name" class="form-label">Book Name</label>
+        <input asp-for="category.Name" class="form-control" />
+        <span asp-validation-for="category.Name" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Submit</button>
+</form>

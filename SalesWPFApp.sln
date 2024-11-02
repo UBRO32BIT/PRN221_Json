@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SalesWPFApp.Repositories", 
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SalesWPFApp_RazorPages", "SalesWPFApp_RazorPages\SalesWPFApp_RazorPages.csproj", "{EE5A77E3-5406-4CDB-ABAC-9FD2D51528B0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SalesWPFApp.Services", "SalesWPFApp.Services\SalesWPFApp.Services.csproj", "{7E20F3BA-CADB-4B05-AFE4-793EC1D01DB5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SalesWPFApp.Services", "SalesWPFApp.Services\SalesWPFApp.Services.csproj", "{7E20F3BA-CADB-4B05-AFE4-793EC1D01DB5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

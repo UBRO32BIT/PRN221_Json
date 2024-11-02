@@ -1,22 +1,30 @@
 using BusinessObject.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using SalesWPFApp.Repositories.Interfaces;
+using SalesWPFApp.Services.Interfaces;
 
 namespace SalesWPFApp_RazorPages.Pages.Books
 {
+    [Authorize(Roles = "ADMIN")]
     public class CreateModel : PageModel
     {
-        private readonly IBookRepository _bookRepository;
-        private readonly IBookCategoryRepository _categoryRepository;
+        private readonly IBookService _bookRepository;
+        private readonly IBookCategoryService _categoryRepository;
 
         [BindProperty]
         public Book book { get; set; }
+
         [BindProperty]
         public List<SelectListItem> categories { get; set; }
 
-        public CreateModel(IBookRepository bookRepository, IBookCategoryRepository categoryRepository)
+        [BindProperty]
+        public IFormFile ImageFile { get; set; }
+        private readonly string _imagePath = Path.Combine("wwwroot", "Images");
+
+
+        public CreateModel(IBookService bookRepository, IBookCategoryService categoryRepository)
         {
             _bookRepository = bookRepository;
             _categoryRepository = categoryRepository;
@@ -25,7 +33,6 @@ namespace SalesWPFApp_RazorPages.Pages.Books
 
         public void OnGet()
         {
-            // Fetch the categories from the repository and map to SelectListItems
             categories = _categoryRepository.GetAllCategories()
                 .Select(category => new SelectListItem
                 {
@@ -37,11 +44,33 @@ namespace SalesWPFApp_RazorPages.Pages.Books
 
         public IActionResult OnPost()
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid && ImageFile == null)
             {
-                _bookRepository.AddBook(book);
+                // Reload categories if there's a validation error
+                categories = _categoryRepository.GetAllCategories()
+                    .Select(category => new SelectListItem
+                    {
+                        Value = category.CategoryId.ToString(),
+                        Text = category.Name
+                    })
+                    .ToList();
+                return Page();
+            }
+            var fileName = $"{Guid.NewGuid()}_{ImageFile.FileName}";
+            var filePath = Path.Combine(_imagePath, fileName);
+            // Ensure the Images directory exists
+            Directory.CreateDirectory(_imagePath);
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                ImageFile.CopyTo(stream);
             }
 
+            // Update book's ImageUrl with the relative path
+            book.ImageUrl = $"/Images/{fileName}";
+
+
+            _bookRepository.AddBook(book);
             return RedirectToPage("Index");
         }
     }

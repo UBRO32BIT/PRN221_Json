@@ -1,23 +1,23 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
-using SalesWPFApp.Repositories.Implementations;
-using SalesWPFApp.Repositories.Interfaces;
+using SalesWPFApp.Services.Implementations;
+using SalesWPFApp.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
         .AddCookie(options =>
         {
-            options.LoginPath = "/Account/Login"; // Redirect here if not authenticated
-            options.LogoutPath = "/Account/Logout"; // Redirect here after logout
-            options.AccessDeniedPath = "/Account/AccessDenied"; // Redirect here if not authorized
+            options.LoginPath = "/Login"; // Redirect here if not authenticated
+            options.LogoutPath = "/Logout"; // Redirect here after logout
+            options.AccessDeniedPath = "/AccessDenied"; // Redirect here if not authorized
             options.ExpireTimeSpan = TimeSpan.FromMinutes(30); // Set cookie expiration
             options.SlidingExpiration = true; // Reset the expiration time on each request
         });
 
 // Add services to the container.
 builder.Services.AddRazorPages();
-builder.Services.AddScoped<IMemberRepository, MemberRepository>();
-builder.Services.AddScoped<IBookRepository, BookRepository>();
-builder.Services.AddScoped<IBookCategoryRepository, BookCategoryRepository>();
+builder.Services.AddScoped<IMemberService, MemberService>();
+builder.Services.AddScoped<IBookService, BookService>();
+builder.Services.AddScoped<IBookCategoryService, BookCategoryService>();
 
 var app = builder.Build();
 

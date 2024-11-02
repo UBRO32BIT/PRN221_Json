@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - SalesWPFApp_RazorPages</title>
+    <title>@ViewData["Title"]</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/SalesWPFApp_RazorPages.styles.css" asp-append-version="true" />
@@ -12,7 +12,7 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
-                <a class="navbar-brand" asp-area="" asp-page="/Index">SalesWPFApp_RazorPages</a>
+                <a class="navbar-brand" asp-area="" asp-page="/Index">RyouBookStore</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -22,19 +22,40 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
-                        </li>
+                        @if (User.IsInRole("ADMIN"))
+                        {
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Books/Index">Manage Books</a>
+                            <a class="nav-link text-dark" asp-area="" asp-page="/Categories/Index">Manage Categories</a>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-page="/Privacy">Privacy</a>
+                            </li>
+                        }
+                        
                     </ul>
                 </div>
                 <div class="dropdown">
-                    <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="dropdownUser" data-bs-toggle="dropdown">
-                        <img src="https://ubro32bit.github.io/MyFirstWebpage/other-site/logo.png" alt="Profile Image" width="32" height="32" class="rounded-circle me-2" />
-                        <strong>@User.Identity.Name</strong>
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-dark shadow" aria-labelledby="dropdownUser">
-                        <li><a class="dropdown-item" href="/logout">Sign out</a></li>
-                    </ul>
+                    @if (User.Identity != null && User.Identity.IsAuthenticated)
+                    {
+                        <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="dropdownUser" data-bs-toggle="dropdown">
+                            <img src="https://ubro32bit.github.io/MyFirstWebpage/other-site/logo.png" alt="Profile Image" width="32" height="32" class="rounded-circle me-2" />
+                            <strong>@User.Identity.Name</strong>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-dark shadow" aria-labelledby="dropdownUser">
+                            @if (User.IsInRole("ADMIN"))
+                            {
+                                <li><a class="dropdown-item" asp-page="/Books/Index">Manage Books</a></li>
+                                <li><a class="dropdown-item" asp-page="/Categories/Index">Manage Categories</a></li>
+                            }
+                            <li><a class="dropdown-item" asp-page="/Logout">Sign out</a></li>
+                        </ul>
+                    }
+                    else
+                    {
+                        <a class="nav-link text-dark" asp-area="" asp-page="/Login">Login</a>
+                    }
                 </div>
             </div>
         </nav>

@@ -8,3 +8,116 @@
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
+
+<!-- Search Form -->
+<div class="d-flex justify-content-center align-items-center">
+    <form asp-page-handler="Search" method="get" class="w-50">
+        <div class="d-flex form-inputs">
+            <input class="form-control" type="text" name="Search" value="@Model.Search" placeholder="Search any product...">
+            <i class="fa-solid fa-magnifying-glass"></i>
+        </div>
+        <button type="submit" class="btn btn-primary my-1">Search</button>
+    </form>
+</div>
+
+<!-- Notification Message -->
+@if (!string.IsNullOrEmpty(Model.ShoppingMessage))
+{
+    <div class="alert alert-success d-flex align-items-center justify-content-between" role="alert">
+        <div>
+            <i class="fa-solid fa-circle-check me-2"></i>
+            @Model.ShoppingMessage
+        </div>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<!-- Search Results -->
+@if (!string.IsNullOrEmpty(Model.Search))
+{
+    <h2 class="text-center">Search Result for @Model.Search</h2>
+}
+
+@if (Model.BookList.Count > 0)
+{
+    <div class="row gx-5 gy-2">
+        @foreach (var book in Model.BookList)
+        {
+            <div class="product col-3 py-4 position-relative">
+                <div class="product-image">
+                    @if (!string.IsNullOrEmpty(book.ImageUrl))
+                    {
+                        <img class="rounded-2" src="@book.ImageUrl" alt="@book.BookName">
+                    }
+                </div>
+                <div class="product-info">
+                    <p class="fw-bold fs-5">@book.BookName</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <div>Price</div>
+                            <p class="fw-bold">@book.UnitPrice.ToString("N0")$</p>
+                        </div>
+                        <div class="text-end">
+                            <div>In stock</div>
+                            <p class="fw-bold">@book.UnitsInStock</p>
+                        </div>
+                    </div>
+                    <form asp-page-handler="AddToCart" method="post">
+                        <input type="hidden" name="BookId" value="@book.BookId" />
+                        <div>
+                            @if (book.UnitsInStock > 0)
+                            {
+                                if (!User.IsInRole("ADMIN"))
+                                {
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <input type="number" min="1" max="@book.UnitsInStock" name="Quantity" value="1" />
+                                        <button type="submit" class="btn btn-light border">Add to Cart</button>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <span class="fw-bold text-warning float-end">SOLD OUT</span>
+                            }
+                        </div>
+                    </form>
+                </div>
+            </div>
+        }
+    </div>
+}
+
+<style>
+    .form-inputs {
+        position: relative;
+    }
+
+        .form-inputs .form-control {
+            height: 45px;
+        }
+
+            .form-inputs .form-control:focus {
+                box-shadow: none;
+                border: 1px solid #000;
+            }
+
+        .form-inputs i {
+            position: absolute;
+            right: 10px;
+            top: 15px;
+        }
+
+    .product-image {
+        height: 35vh;
+    }
+
+        .product-image img {
+            object-fit: cover; /* This will scale and crop the image to fit within the div */
+            width: 100%; /* Make sure the image takes up the full width of the div */
+            height: 100%; /* Make sure the image takes up the full height of the div */
+        }
+
+    input[type="number"] {
+        width: 64px;
+    }
+</style>
