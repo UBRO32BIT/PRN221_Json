@@ -1,0 +1,110 @@
+[
+  {
+    "BookId": 1,
+    "CategoryId": 3,
+    "BookName": "The Great Gatsby",
+    "Author": "F. Scott Fitzgerald",
+    "Publisher": "Scribner",
+    "Year": 1926,
+    "Description": "A novel set in the Jazz Age that tells the story of Jay Gatsby and his unrequited love for Daisy Buchanan.",
+    "UnitPrice": 10.99,
+    "UnitsInStock": 100,
+    "ImageUrl": "/Images/59624bba-b404-4659-97d7-66530533283e_460196608_122109597938513642_2850066670859979089_n.jpg"
+  },
+  {
+    "BookId": 2,
+    "CategoryId": 6,
+    "BookName": "Sapiens: A Brief History of Humankind",
+    "Author": "Yuval Noah Harari",
+    "Publisher": "Harper",
+    "Year": 2011,
+    "Description": "A narrative history of humanity from the Stone Age to the modern age.",
+    "UnitPrice": 18.99,
+    "UnitsInStock": 50,
+    "ImageUrl": "/Images/442386639_360738396999303_9192466444578365422_n.jpg"
+  },
+  {
+    "BookId": 3,
+    "CategoryId": 3,
+    "BookName": "\u307C\u3063\u3061\u30FB\u3056\u30FB\u308D\u3063\u304F! 6 - Bocchi The Rock! 6",
+    "Author": "\u306F\u307E\u3058\u3042\u304D",
+    "Publisher": "Houbunsha",
+    "Year": 2023,
+    "Description": "\u9670\u30AD\u30E3\u306A\u3089\u30ED\u30C3\u30AF\u3092\u3084\u308C\uFF01\uFF01\uFF01\n\n\u2026\u2026\u3068\u8A00\u3044\u305F\u3044\u3068\u3053\u308D\u3067\u3059\u304C\u3001\u304A\u4ED5\u4E8B\u3068\u3057\u3066\u3084\u3063\u3066\u3044\u304F\u3068\u306A\u308B\u3068\u8272\u3005\u3068\u96E3\u3057\u3044\u3002\n\n\u30A4\u30F3\u30C7\u30A3\u30FC\u30BA\u30EC\u30FC\u30D9\u30EB\u304B\u3089\u30C7\u30D3\u30E5\u30FC\u304C\u6C7A\u307E\u3063\u3066\u3044\u308B\u7D50\u675F\u30D0\u30F3\u30C9\u3082\u3001\u5352\u696D\u5F8C\u306E\u9032\u8DEF\u306F\u7D76\u8CDB\u8FF7\u3044\u4E2D\u3067\u3059\u3002\n\n\u7B2C6\u5DFB\u3067\u306F\u5F8C\u85E4\u3068\u5927\u69FB\u306E\u30AA\u30FC\u30C1\u30E5\u30FC\u30D6\u914D\u4FE1\u3084\u3001\u5E97\u9577\u306E\u8A95\u751F\u65E5\u8A18\u5FF5\u30E9\u30A4\u30D6\u306A\u3069\u3001\u697D\u3057\u3055\u3082\u5927\u5E45\u30D1\u30EF\u30FC\u30A2\u30C3\u30D7\uFF01\n\n\u7D50\u675F\u30D0\u30F3\u30C9\u306E\u6D3B\u8E8D\u304B\u3089\u307E\u3060\u307E\u3060\u76EE\u304C\u96E2\u305B\u306A\u3044\uFF01",
+    "UnitPrice": 226400.00,
+    "UnitsInStock": 130,
+    "ImageUrl": "https://cdn0.fahasa.com/media/catalog/product/9/7/9784832274778.jpg"
+  },
+  {
+    "BookId": 4,
+    "CategoryId": 3,
+    "BookName": "The Hobbit",
+    "Author": "J.R.R. Tolkien",
+    "Publisher": "George Allen \u0026 Unwin",
+    "Year": 1937,
+    "Description": "A fantasy novel about Bilbo Baggins and his adventure to win a share of the treasure guarded by Smaug the dragon.",
+    "UnitPrice": 12.99,
+    "UnitsInStock": 70,
+    "ImageUrl": "/Images/c1f56d5c-2eef-4c7c-b924-a82e2c92624c_putin_x_jixiping.jpg"
+  },
+  {
+    "BookId": 5,
+    "CategoryId": 5,
+    "BookName": "The Hound of the Baskervilles",
+    "Author": "Arthur Conan Doyle",
+    "Publisher": "George Newnes",
+    "Year": 1902,
+    "Description": "A Sherlock Holmes mystery involving a family curse and a terrifying hound.",
+    "UnitPrice": 9.99,
+    "UnitsInStock": 60,
+    "ImageUrl": "https://cdn0.fahasa.com/media/flashmagazine/images/page_images/bocchi_the_rock_6/2023_10_19_16_18_04_4-390x510.jpg"
+  },
+  {
+    "BookId": 6,
+    "CategoryId": 6,
+    "BookName": "The Diary of a Young Girl",
+    "Author": "Anne Frank",
+    "Publisher": "Contact Publishing",
+    "Year": 1947,
+    "Description": "The wartime diary of Anne Frank, a young Jewish girl hiding from the Nazis.",
+    "UnitPrice": 8.99,
+    "UnitsInStock": 80,
+    "ImageUrl": "/Images/b6d7b87a-4e42-4dde-8378-cb9bd74434a6_nghe_ma_tham.jpg"
+  },
+  {
+    "BookId": 7,
+    "CategoryId": 7,
+    "BookName": "The History of the Ancient World",
+    "Author": "Susan Wise Bauer",
+    "Publisher": "W.W. Norton \u0026 Company",
+    "Year": 2007,
+    "Description": "A detailed account of ancient civilizations from Mesopotamia to the fall of Rome.",
+    "UnitPrice": 20.99,
+    "UnitsInStock": 40,
+    "ImageUrl": "/Images/8b00db65-ea4b-4436-a77c-ed9f9f9bb3da_455041973_122115367826384753_7942661706685327871_n.png"
+  },
+  {
+    "BookId": 8,
+    "CategoryId": 8,
+    "BookName": "Atomic Habits",
+    "Author": "James Clear",
+    "Publisher": "Avery",
+    "Year": 2018,
+    "Description": "A guide on how small habits can lead to big changes in life.",
+    "UnitPrice": 16.99,
+    "UnitsInStock": 90,
+    "ImageUrl": "/Images/9a304b93-9808-4059-9cde-003c16a21209_460196608_122109597938513642_2850066670859979089_n.jpg"
+  },
+  {
+    "BookId": 9,
+    "CategoryId": 9,
+    "BookName": "Lonely Planet: Japan",
+    "Author": "Lonely Planet",
+    "Publisher": "Lonely Planet",
+    "Year": 2020,
+    "Description": "A travel guide to Japan, covering culture, landmarks, and local tips.",
+    "UnitPrice": 24.99,
+    "UnitsInStock": 20,
+    "ImageUrl": "/Images/9c79050f-71b5-4fda-97f8-b6de5c7f14f7_421268950_326908100333492_3365500542744697941_n.jpg"
+  }
+]

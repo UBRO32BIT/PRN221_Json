@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace BusinessObject.Entities;
 
@@ -27,7 +28,8 @@ public partial class Book
 
     public string ImageUrl { get; set; } = null!;
     [ValidateNever]
+    [JsonIgnore]
     public virtual BookCategory Category { get; set; } = null!;
-
+    [JsonIgnore]
     public virtual ICollection<OrderDetail> OrderDetails { get; } = new List<OrderDetail>();
 }

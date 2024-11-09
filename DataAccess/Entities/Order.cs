@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace BusinessObject.Entities;
 
@@ -17,5 +18,6 @@ public partial class Order
 
     public virtual Member Member { get; set; } = null!;
 
+    [JsonIgnore]
     public virtual ICollection<OrderDetail> OrderDetails { get; } = new List<OrderDetail>();
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace BusinessObject.Entities;
 
@@ -9,5 +10,6 @@ public partial class Role
 
     public string RoleName { get; set; } = null!;
 
+    [JsonIgnore]
     public virtual ICollection<Member> Members { get; } = new List<Member>();
 }

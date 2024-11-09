@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace BusinessObject.Entities;
 
@@ -15,7 +16,9 @@ public partial class OrderDetail
 
     public double? Discount { get; set; }
 
+    [JsonIgnore]
     public virtual Book Book { get; set; } = null!;
 
+    [JsonIgnore]
     public virtual Order Order { get; set; } = null!;
 }

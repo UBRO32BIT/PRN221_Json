@@ -4,68 +4,173 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace SalesWPFApp.DAOs
 {
     public class BookDAO
     {
-        private FstoreContext _context;
         private static BookDAO? _instance;
-        public BookDAO()
+        private readonly string _jsonFilePath = "books.json";
+
+        public static BookDAO Instance => _instance ??= new BookDAO();
+
+        private BookDAO()
         {
-            _context = new FstoreContext();
+            try
+            {
+                if (!File.Exists(_jsonFilePath))
+                {
+                    File.WriteAllText(_jsonFilePath, "[]");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error initializing file: {ex.Message}");
+                throw;
+            }
         }
-        public static BookDAO Instance
+
+        private List<Book> ReadBooksFromFile()
         {
-            get => _instance ?? new BookDAO();
+            try
+            {
+                var jsonData = File.ReadAllText(_jsonFilePath);
+                return JsonSerializer.Deserialize<List<Book>>(jsonData) ?? new List<Book>();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error reading books from file: {ex.Message}");
+                return new List<Book>();
+            }
+        }
+
+        private void WriteBooksToFile(List<Book> books)
+        {
+            try
+            {
+                var jsonData = JsonSerializer.Serialize(books, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(_jsonFilePath, jsonData);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error writing books to file: {ex.Message}");
+            }
+        }
+
+        private Book PopulateBookCategory(Book book)
+        {
+            try
+            {
+                var categoryDAO = BookCategoryDAO.Instance;
+                var category = categoryDAO.GetBookCategoryById(book.CategoryId);
+                if (category != null)
+                {
+                    book.Category = category;
+                }
+                return book;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error populating book category: {ex.Message}");
+                throw;
+            }
         }
 
         public Book? GetBookById(int id)
         {
-            return _context.Books.SingleOrDefault(p => p.BookId == id);
+            try
+            {
+                var book = ReadBooksFromFile().SingleOrDefault(p => p.BookId == id);
+                return book != null ? PopulateBookCategory(book) : null;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error retrieving book by ID: {ex.Message}");
+                return null;
+            }
         }
 
         public List<Book> GetAllBooks()
         {
-            return _context.Books.Include(b => b.Category).ToList();
+            try
+            {
+                var books = ReadBooksFromFile();
+                return books.Select(PopulateBookCategory).ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error retrieving all books: {ex.Message}");
+                return new List<Book>();
+            }
         }
 
-        public void AddBook(Book book) {
-            _context.Books.Add(book);
-            _context.SaveChanges();
+        public void AddBook(Book book)
+        {
+            try
+            {
+                var books = ReadBooksFromFile();
+                book.BookId = books.Any() ? books.Max(b => b.BookId) + 1 : 1;
+                books.Add(book);
+                WriteBooksToFile(books);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error adding book: {ex.Message}");
+            }
         }
 
         public void UpdateBook(Book book)
         {
-            var updatedBook = _context.Books.SingleOrDefault(m => m.BookId == book.BookId);
-            if (updatedBook != null)
+            try
             {
-                updatedBook.BookName = book.BookName;
-                updatedBook.Author = book.Author;
-                updatedBook.Publisher = book.Publisher;
-                updatedBook.Year = book.Year;
-                updatedBook.Description = book.Description;
-                updatedBook.ImageUrl = book.ImageUrl;
-                updatedBook.UnitPrice = book.UnitPrice;
-                updatedBook.UnitsInStock = book.UnitsInStock;
-                updatedBook.CategoryId = book.CategoryId;
-                _context.SaveChanges();
+                var books = ReadBooksFromFile();
+                var index = books.FindIndex(b => b.BookId == book.BookId);
+
+                if (index != -1)
+                {
+                    books[index] = book;
+                    WriteBooksToFile(books);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error updating book: {ex.Message}");
             }
         }
 
-        public void DeleteBook(int id) {
-            var book = _context.Books.SingleOrDefault(p => p.BookId == id);
-            if (book != null)
+        public void DeleteBook(int id)
+        {
+            try
             {
-                _context.Books.Remove(book);
-                _context.SaveChanges();
+                var books = ReadBooksFromFile();
+                var bookToRemove = books.SingleOrDefault(b => b.BookId == id);
+
+                if (bookToRemove != null)
+                {
+                    books.Remove(bookToRemove);
+                    WriteBooksToFile(books);
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error deleting book: {ex.Message}");
             }
         }
 
         public List<Book> GetBooksByCategoryId(int categoryId)
         {
-            return _context.Books.Where(b => b.CategoryId == categoryId).ToList();
+            try
+            {
+                var books = ReadBooksFromFile().Where(b => b.CategoryId == categoryId).ToList();
+                return books.Select(PopulateBookCategory).ToList();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error retrieving books by category ID: {ex.Message}");
+                return new List<Book>();
+            }
         }
     }
 }

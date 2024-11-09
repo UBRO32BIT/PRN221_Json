@@ -1,0 +1,42 @@
+[
+  {
+    "CategoryId": 1,
+    "Name": "Fiction"
+  },
+  {
+    "CategoryId": 2,
+    "Name": "Non-Fiction"
+  },
+  {
+    "CategoryId": 3,
+    "Name": "Manga"
+  },
+  {
+    "CategoryId": 4,
+    "Name": "Fantasy"
+  },
+  {
+    "CategoryId": 5,
+    "Name": "Mystery"
+  },
+  {
+    "CategoryId": 6,
+    "Name": "Biography"
+  },
+  {
+    "CategoryId": 7,
+    "Name": "History"
+  },
+  {
+    "CategoryId": 8,
+    "Name": "Self-Help"
+  },
+  {
+    "CategoryId": 9,
+    "Name": "Travel"
+  },
+  {
+    "CategoryId": 10,
+    "Name": "Children"
+  }
+]

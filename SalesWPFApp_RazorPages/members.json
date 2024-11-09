@@ -1,0 +1,20 @@
+[
+  {
+    "MemberId": 3,
+    "Email": "phucnt40@fpt.edu.vn",
+    "CompanyName": "FSOFT",
+    "City": "KCJ",
+    "Country": "VN",
+    "Password": "$2a$12$IFeriheZC8ZMNW.Lvg7a2O7Tm.3oXxqxVMPzwjheZN2Q49XPBpw0S",
+    "RoleId": 1
+  },
+  {
+    "MemberId": 6,
+    "Email": "ubro3@32mine.net",
+    "CompanyName": "32MINE",
+    "City": "Shanghai",
+    "Country": "China",
+    "Password": "$2y$10$Xka0uqsEVjQWHk/EOClKwOcoNSYuSdt6WuTqV9cgBWfglBXXVC7U2",
+    "RoleId": 2
+  }
+]
